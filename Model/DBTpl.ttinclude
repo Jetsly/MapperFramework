@@ -1,0 +1,77 @@
+﻿<#@ output extension=".cs" #>
+<#@ assembly name="$(SolutionDir)\packages\Dapper.1.37\lib\net45\Dapper.dll" #>
+<#@ assembly name="System.Data.dll" #>
+<#@ assembly name="Microsoft.CSharp.dll" #>
+<#@ assembly name="System.Configuration.dll" #>
+<#@ import namespace="Dapper" #>
+<#@ import namespace="System.Configuration" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.Common" #>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#+
+     class DBTpl
+    {
+
+		public readonly IDbConnection dbConn;
+
+        public DBTpl(string path,string configKey)
+        {            
+			var map = new ExeConfigurationFileMap { ExeConfigFilename = path };
+			var config = ConfigurationManager.OpenMappedExeConfiguration(map,ConfigurationUserLevel.None);
+			ConnectionStringSettings connStr=config.ConnectionStrings.ConnectionStrings[configKey];
+            var factory = DbProviderFactories.GetFactory(connStr.ProviderName);
+            var result = factory.CreateConnection();
+            result.ConnectionString = connStr.ConnectionString;
+            dbConn = result;
+        }   
+
+		public IEnumerable<dynamic> GetTables()
+        {
+			return dbConn.Query<dynamic>(@"
+				select * 
+				from 
+				information_schema.tables 
+				where table_schema=@dbName",
+				new {dbName= dbConn.Database});    		
+		}
+
+		public IEnumerable<dynamic> GetColumns(string tableName)
+        {  
+		  return  dbConn.Query<dynamic>(string.Format("show full columns from `{0}`",tableName));
+		}
+
+		public string UpperFirst(string str)
+        {
+            return new Regex(@"^\w|_\w").Replace(str, (match) =>
+            {
+                 return match.Value.ToUpper();
+            });
+		}
+		
+		public string GetColumnsType(string text,string isNull)
+        {
+		   var lowerText=text.ToLower();
+		   bool allowNull=isNull.ToLower()=="yes";
+           if(lowerText.StartsWith("varchar")){
+				return "string";
+           }
+		   else if(lowerText.StartsWith("int")){
+				return allowNull?"int?":"int";
+           }
+		   else if(lowerText.StartsWith("bit")){
+				return allowNull?"bool?":"bool";
+           }
+		   else if(lowerText.StartsWith("bigint")){
+			    return allowNull?"long?":"long";
+           }
+		   else if(lowerText.StartsWith("timestamp")){
+			    return allowNull?"DateTime?":"DateTime";
+           }
+		   else if(lowerText.StartsWith("datetime")){
+			    return allowNull?"DateTime?":"DateTime";
+           }
+		   return "string";
+		}
+    }
+#>
