@@ -16,17 +16,19 @@ var dbTpl=new DBTpl(Host.ResolvePath(@"Web.config"),"dianna");
 namespace WebApplication1
 {
 <# manager.EndBlock(); #>
+     public partial class DBModel<T>{}
 <# 
 var tables=dbTpl.GetTables();
 foreach (var table in tables)
 {
-	manager.StartNewFile(dbTpl.UpperFirst(table.TABLE_NAME)+".cs"); #>
+	var modelName=dbTpl.UpperFirst(table.TABLE_NAME);
+	manager.StartNewFile(modelName+".cs"); #>
 	using System;
 
     /// <summary>
     /// <#=table.TABLE_COMMENT#>
     /// </summary>
-	public partial class <#=dbTpl.UpperFirst(table.TABLE_NAME)#> 
+	public partial class <#=modelName#> :DBModel<<#=modelName#>>
 	{ 
 <# 
 	  var columns=dbTpl.GetColumns(table.TABLE_NAME);
