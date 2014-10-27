@@ -5,7 +5,7 @@
 <#@include file="DBTpl.ttinclude"#>
 <# 
 var manager = Manager.Create(Host, GenerationEnvironment); 
-var dbTpl=new DBTpl(Host.ResolvePath(@"Web.config"),"dianna");
+var dbTpl=new DBTpl(Host.ResolvePath(@"app.config"),"dianna");
 #>
 <# manager.StartHeader(); #>
 /*
@@ -13,7 +13,7 @@ var dbTpl=new DBTpl(Host.ResolvePath(@"Web.config"),"dianna");
  此代码由T4模板自动生成
  生成时间 <#=DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") #> by Auto Generated
 */
-namespace WebApplication1
+namespace Model
 {
 <# manager.EndBlock(); #>
      public partial class DBModel<T>{}
