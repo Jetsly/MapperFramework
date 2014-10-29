@@ -46,7 +46,12 @@ namespace DapperProvider
             }
             return source.Provider.Execute<TSource>(source.Expression);
         }
-
+        /// <summary>
+        /// 获取查询的表
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="conn"></param>
+        /// <returns></returns>
         public static Query<T> GetTable<T>(this IDbConnection conn)
         {
             return new Query<T>(new DapperQueryProvider(conn));
