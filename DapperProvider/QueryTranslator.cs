@@ -52,7 +52,7 @@ namespace DapperProvider
                 this.Visit(lambda.Body);
                 return node;
             }
-            else if (node.Method.DeclaringType == typeof(DapperEx) && node.Method.Name.Equals("Insert"))
+            else if (node.Method.DeclaringType == typeof(QueryEx) && node.Method.Name.Equals("Insert"))
             {
                 queryType = QueryType.Insert;
                 this.Visit(node.Arguments[0]);

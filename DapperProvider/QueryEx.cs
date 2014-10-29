@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DapperProvider
 {
-    public static class DapperEx
+    public static class QueryEx
     {
         /// <summary>
         /// 插入数据
