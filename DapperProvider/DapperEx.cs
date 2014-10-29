@@ -30,8 +30,23 @@ namespace DapperProvider
                 throw new ArgumentNullException("entity");
             }
             return source.Provider.CreateQuery<TResult>(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
-                .MakeGenericMethod(new Type[] { typeof(TSource) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
+                .MakeGenericMethod(new Type[] { typeof(TSource), typeof(TResult) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
         }
+        /// <summary>
+        /// 执行结果
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static TSource Execute<TSource>(this IQueryable<TSource> source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+            return source.Provider.Execute<TSource>(source.Expression);
+        }
+
         public static Query<T> GetTable<T>(this IDbConnection conn)
         {
             return new Query<T>(new DapperQueryProvider(conn));

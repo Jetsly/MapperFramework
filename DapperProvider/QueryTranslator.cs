@@ -1,13 +1,22 @@
-﻿using System;
+﻿using Model;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
 namespace DapperProvider
 {
+    internal enum QueryType
+    {
+        Insert,
+        Update,
+        Delete,
+        Select
+    }
     internal class QueryTranslator : ExpressionVisitor
     {
         StringBuilder sb;
+        QueryType queryType;
 
         internal QueryTranslator()
         {
@@ -18,6 +27,11 @@ namespace DapperProvider
             this.sb = new StringBuilder();
             this.Visit(expression);
             return this.sb.ToString();
+        }
+
+        internal QueryType QueryType
+        {
+            get { return queryType; }
         }
 
         private static Expression StripQuotes(Expression e)
@@ -31,13 +45,20 @@ namespace DapperProvider
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            if (node.Method.DeclaringType == typeof(Queryable) && node.Method.Name == "Where")
+            if (node.Method.DeclaringType == typeof(Queryable) && node.Method.Name.Equals("Where"))
             {
-                sb.Append("SELECT * FROM (");
                 this.Visit(node.Arguments[0]);
-                sb.Append(") AS T WHERE ");
                 LambdaExpression lambda = (LambdaExpression)StripQuotes(node.Arguments[1]);
                 this.Visit(lambda.Body);
+                return node;
+            }
+            else if (node.Method.DeclaringType == typeof(DapperEx) && node.Method.Name.Equals("Insert"))
+            {
+                queryType = QueryType.Insert;
+                this.Visit(node.Arguments[0]);
+                ConstantExpression lambda = (ConstantExpression)node.Arguments[1];
+                //(lambda.Value as DBModel).PropertyChangedDic
+                //this.Visit(lambda.Body);
                 return node;
             }
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
@@ -101,8 +122,8 @@ namespace DapperProvider
             if (q != null)
             {
                 // assume constant nodes w/ IQueryables are table references
-                sb.Append("SELECT * FROM ");
-                sb.Append(q.ElementType.Name);
+                //sb.Append("SELECT * FROM ");
+                //sb.Append(q.ElementType.Name);
             }
             else if (node.Value == null)
             {

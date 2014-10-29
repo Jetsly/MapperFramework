@@ -27,12 +27,13 @@ namespace UnitTest
         public void TestCRUD()
         {
             var table = dbConn.GetTable<Userinfo>();
-            var linq = table.Where(x => x.AnotherName == "a")
-                .Insert<Userinfo, int>(new Userinfo()
+            var linq = table.Insert<Userinfo, int>(new Userinfo()
             {
-
+                AnotherName = "a",
+                DeptCode = "b"
             });
-            var a = linq.FirstOrDefault();
+
+            var result = linq.Execute();
         }
 
         [TestMethod]
