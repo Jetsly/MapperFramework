@@ -19,7 +19,7 @@ namespace DapperProvider
         /// <param name="source"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static IQueryable<TResult> Insert<TSource, TResult>(this IQueryable<TSource> source, TSource entity)
+        public static IQueryable<int> Insert<TSource>(this IQueryable<TSource> source, TSource entity)
         {
             if (source == null)
             {
@@ -29,8 +29,8 @@ namespace DapperProvider
             {
                 throw new ArgumentNullException("entity");
             }
-            return source.Provider.CreateQuery<TResult>(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
-                .MakeGenericMethod(new Type[] { typeof(TSource), typeof(TResult) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
+            return source.Provider.CreateQuery(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
+                .MakeGenericMethod(new Type[] { typeof(TSource) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
         }
         /// <summary>
         /// 
@@ -40,7 +40,7 @@ namespace DapperProvider
         /// <param name="source"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static IQueryable<TResult> Update<TSource, TResult>(this IQueryable<TSource> source, TSource entity)
+        public static IQueryable<int> Update<TSource>(this IQueryable<TSource> source, TSource entity)
         {
             if (source == null)
             {
@@ -50,8 +50,8 @@ namespace DapperProvider
             {
                 throw new ArgumentNullException("entity");
             }
-            return source.Provider.CreateQuery<TResult>(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
-                .MakeGenericMethod(new Type[] { typeof(TSource), typeof(TResult) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
+            return source.Provider.CreateQuery<int>(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
+                .MakeGenericMethod(new Type[] { typeof(TSource) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
         }
         /// <summary>
         /// 
@@ -61,18 +61,14 @@ namespace DapperProvider
         /// <param name="source"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public static IQueryable<TResult> Delete<TSource, TResult>(this IQueryable<TSource> source, TSource entity)
+        public static IQueryable<int> Delete<TSource>(this IQueryable<TSource> source)
         {
             if (source == null)
             {
                 throw new ArgumentNullException("source");
             }
-            if (entity == null)
-            {
-                throw new ArgumentNullException("entity");
-            }
-            return source.Provider.CreateQuery<TResult>(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
-                .MakeGenericMethod(new Type[] { typeof(TSource), typeof(TResult) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
+            return source.Provider.CreateQuery<int>(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
+                .MakeGenericMethod(new Type[] { typeof(TSource) }), new Expression[] { source.Expression }));
         }
         /// <summary>
         /// 执行结果

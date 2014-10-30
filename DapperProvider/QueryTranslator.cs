@@ -60,6 +60,12 @@ namespace DapperProvider
                 this.Visit(lambda.Body);
                 return node;
             }
+            else if (node.Method.Name.Equals("Delete") && node.Method.DeclaringType == typeof(QueryEx))
+            {
+                this.Visit(node.Arguments[0]);
+                QueryType = QueryType.Delete;
+                return node;
+            }
             else if (node.Method.DeclaringType == typeof(QueryEx))
             {
                 this.Visit(node.Arguments[0]);
@@ -72,11 +78,7 @@ namespace DapperProvider
                 else if (node.Method.Name.Equals("Update"))
                 {
                     QueryType = QueryType.Update;
-                }
-                else if (node.Method.Name.Equals("Delete"))
-                {
-                    QueryType = QueryType.Delete;
-                }
+                }                
                 return node;
             }
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));

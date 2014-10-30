@@ -27,20 +27,24 @@ namespace UnitTest
         public void TestCRUD()
         {
             var table = dbConn.Get<Usermaxrev>();
-            //var insert = table.Insert<Usermaxrev, int>(new Usermaxrev()
-            //{
-            //    LoginName = "dsad",
-            //    MaxMsgId = 156,
-            //});
-
-            //var result = insert.Execute();
-
-            var update = table.Where(x => x.MaxMsgId == 15567657||x.LoginName=="a").Update<Usermaxrev, int>(new Usermaxrev()
+            var insert = table.Insert(new Usermaxrev()
             {
-                MaxMsgId = 15567657,
+                LoginName = "dsad",
+                MaxMsgId = 156,
             });
 
-            var result2 = update.Execute();
+            var result = insert.Execute();
+
+            //var update = table.Where(x => x.MaxMsgId == 15567657 || x.LoginName == "a").Update(new Usermaxrev()
+            //{
+            //    MaxMsgId = 15567657,
+            //});
+
+            //var result2 = update.Execute();
+
+            //var deletd = table.Where(x => x.MaxMsgId == 15567657 || x.LoginName == "a").Delete<Usermaxrev>();
+
+           // var result3 = deletd.Execute();
 
         }
 

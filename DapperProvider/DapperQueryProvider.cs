@@ -31,13 +31,15 @@ namespace DapperProvider
 
                 case QueryType.Update:
                     sql = string.Format("UPDATE `{0}` SET {1} WHERE {2}", translate.TableName,
-                        string.Join(",", translate.DBModel.PropertyChangedList.Select(x=>string.Format("`{0}`=@{0}",x))), translate.WhereString);
+                        string.Join(",", translate.DBModel.PropertyChangedList.Select(x => string.Format("`{0}`=@{0}", x))), translate.WhereString);
                     return conn.Execute(sql, translate.DBModel);
 
+                //DELETE FROM 表名称 WHERE 列名称 = 值
                 case QueryType.Delete:
+                    sql = string.Format("DELETE FROM `{0}` WHERE {1}", translate.TableName, translate.WhereString);
+                    return conn.Execute(sql);
 
 
-                    break;
                 case QueryType.Select:
 
 
