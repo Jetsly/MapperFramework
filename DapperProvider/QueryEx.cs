@@ -29,7 +29,7 @@ namespace DapperProvider
             {
                 throw new ArgumentNullException("entity");
             }
-            return source.Provider.CreateQuery(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
+            return source.Provider.CreateQuery<int>(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
                 .MakeGenericMethod(new Type[] { typeof(TSource) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
         }
         /// <summary>
@@ -90,7 +90,7 @@ namespace DapperProvider
         /// <typeparam name="T"></typeparam>
         /// <param name="conn"></param>
         /// <returns></returns>
-        public static Query<T> Get<T>(this IDbConnection conn)
+        public static Query<T> Table<T>(this IDbConnection conn)
         {
             return new Query<T>(new DapperQueryProvider(conn));
         }
