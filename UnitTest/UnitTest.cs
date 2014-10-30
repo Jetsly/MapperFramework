@@ -26,18 +26,18 @@ namespace UnitTest
         [TestMethod]
         public void TestCRUD()
         {
-            //var loginName = "a777";
-            //var insert = dbConn.Table<Usermaxrev>().Insert(new Usermaxrev()
-            //{
-            //    LoginName =loginName,
-            //    MaxMsgId = 156,
-            //});
+            var loginName = "a777";
+            var insert = dbConn.Table<Usermaxrev>().Insert(new Usermaxrev()
+            {
+                LoginName = loginName,
+                MaxMsgId = 156,
+            });
 
-            //var result = insert.Execute();
+            var result = insert.Execute();
 
             var a = new Usermaxrev()
             {
-                LoginName = "a"
+                LoginName = "a777"
             };
 
             var update = dbConn.Table<Usermaxrev>()
@@ -48,13 +48,13 @@ namespace UnitTest
             });
 
 
-            //var result2 = update.Execute();
+             var result2 = update.Execute();
 
-            var deletd = dbConn.Table<Usermaxrev>()
-                .Where(x => x.MaxMsgId == 1 || x.LoginName == "a")
-                .Delete();
+             var deletd = dbConn.Table<Usermaxrev>()
+                 .Where(x => x.MaxMsgId == 1 || x.LoginName == "a")
+                 .Delete();
 
-            var result3 = deletd.Execute();
+             var result3 = deletd.Execute();
 
         }
 

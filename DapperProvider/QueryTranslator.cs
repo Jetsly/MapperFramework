@@ -63,7 +63,6 @@ namespace DapperProvider
         internal void Translate(Expression expression)
         {
             QueryType = QueryType.Select;
-           // expression = Evaluator.PartialEval(expression);
             this.row = Expression.Parameter(typeof(ProjectionRow), "row");
             this.Visit(expression);
         }
@@ -210,6 +209,12 @@ namespace DapperProvider
             if (node.Expression != null && node.Expression.NodeType == ExpressionType.Parameter)
             {
                 sb.AppendFormat("`{0}`", node.Member.Name);
+                return node;
+            }
+            else if (node.Expression != null && node.Expression.NodeType == ExpressionType.MemberAccess)
+            {
+                Expression expression = Evaluator.PartialEval(node);
+                this.Visit(expression);
                 return node;
             }
             throw new NotSupportedException(string.Format("The member '{0}' is not supported", node.Member.Name));
