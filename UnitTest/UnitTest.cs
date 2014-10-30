@@ -26,31 +26,33 @@ namespace UnitTest
         [TestMethod]
         public void TestCRUD()
         {
-            var insert = dbConn.Table<Usermaxrev>().Insert(new Usermaxrev()
-            {
-                LoginName = "dsad",
-                MaxMsgId = 156,
-            });
 
-            var result = insert.Execute();
+            //var insert = dbConn.Table<Usermaxrev>().Insert(new Usermaxrev()
+            //{
+            //    LoginName = "dsad",                 
+            //    MaxMsgId = 156,
+            //});
 
-            var update = dbConn.Table<Usermaxrev>().Where(x => x.MaxMsgId == 15567657 || x.LoginName == "a").Update(new Usermaxrev()
+            //var result = insert.Execute();
+            var id = 156;
+            var update = dbConn.Table<Usermaxrev>().Where(x => x.MaxMsgId == id || x.LoginName == "a").Update(new Usermaxrev()
             {
                 MaxMsgId = 15567657,
             });
 
             var result2 = update.Execute();
 
-            var deletd = dbConn.Table<Usermaxrev>().Where(x => x.MaxMsgId == 15567657 || x.LoginName == "a").Delete<Usermaxrev>();
+            //var deletd = dbConn.Table<Usermaxrev>().Where(x => x.MaxMsgId == 15567657 || x.LoginName == "a").Delete<Usermaxrev>();
 
-            var result3 = deletd.Execute();
+            //var result3 = deletd.Execute();
 
         }
 
         [TestMethod]
         public void TestSelect()
         {
-            var a = dbConn.Query<Userinfo>("select * from userinfo where LoginName=@LoginName", new Userinfo() { LoginName = "alexliu", AnotherName = "amyhe" });
+            var a = dbConn.Query<Userinfo>("select * from userinfo where LoginName=@LoginName", new Userinfo()
+            { LoginName = "alexliu", AnotherName = "amyhe" });
             //var table = dbConn.Get<Userinfo>();
             //var linq = table.Where(x => x.AnotherName == "a");
 

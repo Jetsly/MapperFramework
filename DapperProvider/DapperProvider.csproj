@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Evaluator.cs" />
     <Compile Include="QueryEx.cs" />
     <Compile Include="DapperQueryProvider.cs" />
     <Compile Include="Query.cs" />

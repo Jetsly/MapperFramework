@@ -18,6 +18,7 @@ namespace DapperProvider
 
         public override object Execute(Expression expression)
         {
+            expression = Evaluator.PartialEval(expression);
             QueryTranslator translate = this.Translate(expression);
             var sql = string.Empty;
             switch (translate.QueryType)
