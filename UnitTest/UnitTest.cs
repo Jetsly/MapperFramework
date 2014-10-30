@@ -26,14 +26,14 @@ namespace UnitTest
         [TestMethod]
         public void TestCRUD()
         {
+            //var loginName = "a777";
+            //var insert = dbConn.Table<Usermaxrev>().Insert(new Usermaxrev()
+            //{
+            //    LoginName =loginName,
+            //    MaxMsgId = 156,
+            //});
 
-            var insert = dbConn.Table<Usermaxrev>().Insert(new Usermaxrev()
-            {
-                LoginName = "dsad",
-                MaxMsgId = 156,
-            });
-
-            var result = insert.Execute();
+            //var result = insert.Execute();
 
             var a = new Usermaxrev()
             {
@@ -48,10 +48,10 @@ namespace UnitTest
             });
 
 
-            var result2 = update.Execute();
+            //var result2 = update.Execute();
 
             var deletd = dbConn.Table<Usermaxrev>()
-                .Where(x => x.MaxMsgId == 15567657 || x.LoginName == "a")
+                .Where(x => x.MaxMsgId == 1 || x.LoginName == "a")
                 .Delete();
 
             var result3 = deletd.Execute();
@@ -63,9 +63,9 @@ namespace UnitTest
         {
             var select = from a in dbConn.Table<Userinfo>()
                          where a.AnotherName == "alexliu"
-                         select  a.DeptCode ;
+                         select a.AccountStatusId;
 
-            var ling = select.ToList();
+            var ling = select.ToList<int?>();
         }
     }
 }

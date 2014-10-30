@@ -23,12 +23,12 @@ namespace DapperProvider
             }
         }
 
-        internal IList<string> ProjectColumns(Expression expression, ParameterExpression row)
+        internal ColumnProjection ProjectColumns(Expression expression, ParameterExpression row)
         {
             this.column = new List<string>();
             this.row = row;
             Expression selector = this.Visit(expression);
-            return column;
+            return new ColumnProjection() { Columns = column, SelectorType = selector.Type };
         }
 
         protected override Expression VisitMember(MemberExpression node)
