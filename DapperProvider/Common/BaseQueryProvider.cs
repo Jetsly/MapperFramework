@@ -42,7 +42,7 @@ namespace DapperProvider
 
         public abstract object Execute(Expression expression);
 
-        public abstract IEnumerable<T> Query<T>(string sql);
+        public abstract IEnumerable<T> Query<T>(Expression expression);
 
 
     }

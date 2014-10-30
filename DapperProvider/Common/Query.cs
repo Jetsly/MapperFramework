@@ -55,14 +55,12 @@ namespace DapperProvider
 
         public IEnumerator<T> GetEnumerator()
         {
-            var sql = this.provider.Execute(this.expression);
-            return ((IEnumerable<T>)this.provider.Query<T>(sql.ToString())).GetEnumerator();
+            return this.provider.Query<T>(this.expression).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            var sql = this.provider.Execute(this.expression);
-            return ((IEnumerable)this.provider.Query<T>(sql.ToString())).GetEnumerator();
+            return this.provider.Query<T>(this.expression).GetEnumerator();
         }
     }
 }

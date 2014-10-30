@@ -24,7 +24,11 @@ namespace DapperProvider
             translate.Translate(expression);
             return translate;
         }
-
+        /// <summary>
+        /// 执行结果
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public override object Execute(Expression expression)
         {
             QueryTranslator translate = this.Translate(expression);
@@ -67,25 +71,36 @@ namespace DapperProvider
                     {
                         return conn.Execute(sql, null, tran);
                     });
-
-                //SELECT * FROM WHERE ???
-                case QueryType.Select:
-                    sql = string.Format("SELECT {0} FROM `{1}` WHERE {2}",
-                        string.Format("{0}", translate.SelectColumns != null && translate.SelectColumns.Length > 0 ? ("`" + string.Join("`,`", translate.SelectColumns) + "`") : "*"),
-                        translate.TableName, translate.WhereString);
-
-                    return sql;
+               
                 default:
                     throw new NotSupportedException(string.Format("The QueryType '{0}' is not supported", translate.QueryType));
             }
         }
-
-        public override IEnumerable<T> Query<T>(string sql)
-        {
-            return conn.Query<T>(sql);
-        }
         /// <summary>
-        /// 执行脚本
+        /// 执行查询
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public override IEnumerable<T> Query<T>(Expression expression)
+        {
+            QueryTranslator translate = this.Translate(expression);
+            switch (translate.QueryType)
+            {
+                case QueryType.Select:
+                    var sql = string.Format("SELECT {0} FROM `{1}` WHERE {2}",
+                    string.Format("{0}", translate.SelectColumns != null && translate.SelectColumns.Length > 0 ? ("`" + string.Join("`,`", translate.SelectColumns) + "`") : "*"),
+                    translate.TableName, translate.WhereString);
+                    return conn.Query<T>(sql);
+                    break;
+                default:
+                    throw new NotSupportedException(string.Format("The QueryType '{0}' is not supported", translate.QueryType));
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 是否执行事务判断
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
@@ -109,17 +124,6 @@ namespace DapperProvider
                     throw ex;
                 }
             }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <param name="sql"></param>
-        /// <returns></returns>
-        private IEnumerable<T> QuerySql<T>(T obj, string sql)
-        {
-            return conn.Query<T>(sql);
         }
     }
 
