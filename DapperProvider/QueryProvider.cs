@@ -92,10 +92,8 @@ namespace DapperProvider
                     string.Format("{0}", translate.SelectColumns != null && translate.SelectColumns.Length > 0 ? ("`" + string.Join("`,`", translate.SelectColumns) + "`") : "*"),
                     translate.TableName, translate.WhereString);
                     return conn.Query<T>(sql);
-                    break;
                 default:
-                    throw new NotSupportedException(string.Format("The QueryType '{0}' is not supported", translate.QueryType));
-                    break;
+                    throw new NotSupportedException(string.Format("The QueryType '{0}' is not supported", translate));
             }
         }
 
