@@ -35,7 +35,7 @@ namespace UnitTest
 
             //var result = insert.Execute();
 
-            var update = table.Where(x => x.MaxMsgId == 156).Update<Usermaxrev, int>(new Usermaxrev()
+            var update = table.Where(x => x.MaxMsgId == 15567657||x.LoginName=="a").Update<Usermaxrev, int>(new Usermaxrev()
             {
                 MaxMsgId = 15567657,
             });

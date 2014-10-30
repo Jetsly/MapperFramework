@@ -19,7 +19,7 @@ namespace DapperProvider
         }
         internal string WhereString
         {
-            get {return sb.ToString();};
+            get {return sb.ToString();}
         }
         internal DBModel DBModel
         {
@@ -102,12 +102,6 @@ namespace DapperProvider
             this.Visit(node.Left);
             switch (node.NodeType)
             {
-                case ExpressionType.And:
-                    sb.Append(" AND ");
-                    break;
-                case ExpressionType.Or:
-                    sb.Append(" OR");
-                    break;
                 case ExpressionType.Equal:
                     sb.Append(" = ");
                     break;
@@ -125,6 +119,12 @@ namespace DapperProvider
                     break;
                 case ExpressionType.GreaterThanOrEqual:
                     sb.Append(" >= ");
+                    break;
+                case ExpressionType.OrElse:
+                    sb.Append(" OR ");
+                    break;
+                case ExpressionType.AndAlso:
+                    sb.Append(" AND ");
                     break;
                 default:
                     throw new NotSupportedException(string.Format("The binary operator '{0}' is not supported", node.NodeType));
@@ -153,7 +153,7 @@ namespace DapperProvider
                         sb.Append(((bool)node.Value) ? 1 : 0);
                         break;
                     case TypeCode.String:
-                        sb.AppendFormat("`{0}`", node.Value);
+                        sb.AppendFormat("'{0}'", node.Value);
                         break;
                     case TypeCode.Object:
                         throw new NotSupportedException(string.Format("The constant for '{0}' is not supported", node.Value));
