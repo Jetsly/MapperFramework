@@ -1,6 +1,5 @@
 ﻿using Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -10,17 +9,35 @@ namespace DapperProvider
 
     internal class QueryTranslator : ExpressionVisitor
     {
-        StringBuilder sb;       
+        StringBuilder sb = new StringBuilder();
+        ParameterExpression row;
         internal QueryTranslator() { }
+        /// <summary>
+        /// 操作类型
+        /// </summary>
         internal QueryType QueryType
         {
             private set;
             get;
         }
+        /// <summary>
+        /// 操作的条件
+        /// </summary>
         internal string WhereString
         {
-            get {return sb.ToString();}
+            get { return sb.ToString(); }
         }
+        /// <summary>
+        /// 查询的列
+        /// </summary>
+        internal string[] SelectColumns
+        {
+            private set;
+            get;
+        }
+        /// <summary>
+        /// 参数实体
+        /// </summary>
         internal DBModel DBModel
         {
             private set;
@@ -38,7 +55,8 @@ namespace DapperProvider
         internal void Translate(Expression expression)
         {
             QueryType = QueryType.Select;
-            this.sb = new StringBuilder();
+            expression = Evaluator.PartialEval(expression);
+            this.row = Expression.Parameter(typeof(ProjectionRow), "row");
             this.Visit(expression);
         }
 
@@ -53,22 +71,30 @@ namespace DapperProvider
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            if (node.Method.DeclaringType == typeof(Queryable) && node.Method.Name.Equals("Where"))
+            if (node.Method.DeclaringType == typeof(Queryable))
             {
                 this.Visit(node.Arguments[0]);
-                LambdaExpression lambda = (LambdaExpression)StripQuotes(node.Arguments[1]);
-                this.Visit(lambda.Body);
-                return node;
-            }
-            else if (node.Method.Name.Equals("Delete") && node.Method.DeclaringType == typeof(QueryEx))
-            {
-                this.Visit(node.Arguments[0]);
-                QueryType = QueryType.Delete;
-                return node;
+                if (node.Method.Name.Equals("Where"))
+                {
+                    LambdaExpression lambda = (LambdaExpression)StripQuotes(node.Arguments[1]);
+                    this.Visit(lambda.Body);
+                    return node;
+                }
+                else if (node.Method.Name == "Select")
+                {
+                    LambdaExpression lambda = (LambdaExpression)StripQuotes(node.Arguments[1]);
+                    SelectColumns = new ColumnProjector().ProjectColumns(lambda.Body, this.row).ToArray();
+                    return node;
+                }
             }
             else if (node.Method.DeclaringType == typeof(QueryEx))
             {
                 this.Visit(node.Arguments[0]);
+                if (node.Method.Name.Equals("Delete"))
+                {
+                    QueryType = QueryType.Delete;
+                    return node;
+                }
                 ConstantExpression lambda = (ConstantExpression)node.Arguments[1];
                 DBModel = (lambda.Value as DBModel);
                 if (node.Method.Name.Equals("Insert"))
@@ -78,9 +104,10 @@ namespace DapperProvider
                 else if (node.Method.Name.Equals("Update"))
                 {
                     QueryType = QueryType.Update;
-                }                
+                }
                 return node;
             }
+
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
         }
 

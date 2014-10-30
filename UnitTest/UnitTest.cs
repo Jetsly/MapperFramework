@@ -34,16 +34,24 @@ namespace UnitTest
             });
 
             var result = insert.Execute();
-            var id = 2;
-            var update = dbConn.Table<Usermaxrev>().Where(x => x.MaxMsgId == id || x.LoginName == "dsad")
+
+            var a = new Usermaxrev()
+            {
+                LoginName = "a"
+            };
+
+            var update = dbConn.Table<Usermaxrev>()
+                .Where(x => x.LoginName == a.LoginName)
                 .Update(new Usermaxrev()
             {
-                MaxMsgId = 1,
+                MaxMsgId = 11233,
             });
+
 
             var result2 = update.Execute();
 
-            var deletd = dbConn.Table<Usermaxrev>().Where(x => x.MaxMsgId == 15567657 || x.LoginName == "a")
+            var deletd = dbConn.Table<Usermaxrev>()
+                .Where(x => x.MaxMsgId == 15567657 || x.LoginName == "a")
                 .Delete();
 
             var result3 = deletd.Execute();
@@ -53,12 +61,11 @@ namespace UnitTest
         [TestMethod]
         public void TestSelect()
         {
-            var a = dbConn.Query<Userinfo>("select * from userinfo where LoginName=@LoginName", new Userinfo()
-            { LoginName = "alexliu", AnotherName = "amyhe" });
-            //var table = dbConn.Get<Userinfo>();
-            //var linq = table.Where(x => x.AnotherName == "a");
+            var select = from a in dbConn.Table<Userinfo>()
+                         where a.AnotherName == "alexliu"
+                         select  a.DeptCode ;
 
-            //var reuslt = linq.ToList();
+            var ling = select.ToList();
         }
     }
 }

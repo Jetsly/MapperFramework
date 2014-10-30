@@ -45,7 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ColumnProjector.cs" />
     <Compile Include="Common\Evaluator.cs" />
+    <Compile Include="Common\ProjectionRow.cs" />
     <Compile Include="QueryEx.cs" />
     <Compile Include="QueryProvider.cs" />
     <Compile Include="Common\Query.cs" />

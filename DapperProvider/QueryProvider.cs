@@ -20,15 +20,16 @@ namespace DapperProvider
 
         public override object Execute(Expression expression)
         {
-            expression = Evaluator.PartialEval(expression);
             QueryTranslator translate = this.Translate(expression);
             var sql = string.Empty;
             switch (translate.QueryType)
             {
                 //insert into 表名称(列名称) select @新值
                 case QueryType.Insert:
-                    sql = string.Format("INSERT INTO `{0}`(`{1}`) SELECT @{2}", translate.TableName,
-                        string.Join("`,`", translate.DBModel.PropertyChangedList), string.Join(",@", translate.DBModel.PropertyChangedList));
+                    sql = string.Format("INSERT INTO `{0}`(`{1}`) SELECT @{2}", 
+                        translate.TableName,
+                        string.Join("`,`", translate.DBModel.PropertyChangedList), 
+                        string.Join(",@", translate.DBModel.PropertyChangedList));
 
                     return ExecuteSql((tran) =>
                     {
@@ -42,8 +43,10 @@ namespace DapperProvider
                 //UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
 
                 case QueryType.Update:
-                    sql = string.Format("UPDATE `{0}` SET {1} WHERE {2}", translate.TableName,
-                        string.Join(",", translate.DBModel.PropertyChangedList.Select(x => string.Format("`{0}`=@{0}", x))), translate.WhereString);
+                    sql = string.Format("UPDATE `{0}` SET {1} WHERE {2}", 
+                        translate.TableName,
+                        string.Join(",", translate.DBModel.PropertyChangedList.Select(x => string.Format("`{0}`=@{0}", x))), 
+                        translate.WhereString);
 
                     return ExecuteSql((tran) =>
                     {
@@ -60,14 +63,15 @@ namespace DapperProvider
                         return conn.Execute(sql, null, tran);
                     });
 
+                //SELECT * FROM WHERE ???
                 case QueryType.Select:
-
-
-                    break;
+                    sql = string.Format("SELECT `{0}` FROM `{1}` WHERE {2}",
+                        string.Join("`,`",translate.SelectColumns)
+                        ,translate.TableName, translate.WhereString);
+                    return conn.Query(sql);
                 default:
                     throw new NotSupportedException(string.Format("The QueryType '{0}' is not supported", translate.QueryType));
             }
-            return null;
         }
 
         private QueryTranslator Translate(Expression expression)
