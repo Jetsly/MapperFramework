@@ -8,9 +8,9 @@ namespace DapperProvider
 {
     public class Query<T> :IOrderedQueryable<T>
     {
-        QueryProvider provider;
+        IQueryProvider provider;
         Expression expression;
-        public Query(QueryProvider provider)
+        public Query(IQueryProvider provider)
         {
             if (provider == null)
             {
@@ -20,7 +20,7 @@ namespace DapperProvider
             this.expression = Expression.Constant(this);
         }
 
-        public Query(QueryProvider provider, Expression expression)
+        public Query(IQueryProvider provider, Expression expression)
         {
             if (provider == null)
             {

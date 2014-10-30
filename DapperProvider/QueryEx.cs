@@ -93,7 +93,7 @@ namespace DapperProvider
         /// <returns></returns>
         public static Query<T> Table<T>(this IDbConnection conn, bool transaction=false)
         {
-            return new Query<T>(new DapperQueryProvider(conn, transaction));
+            return new Query<T>(new QueryProvider(conn, transaction));
         }
 
     }

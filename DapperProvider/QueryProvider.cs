@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using Dapper;
 namespace DapperProvider
 {
-    public class DapperQueryProvider : QueryProvider
+    public class QueryProvider : BaseQueryProvider
     {
         private readonly IDbConnection conn;
         private readonly bool isOpenTran;
-        public DapperQueryProvider(IDbConnection conn, bool transaction)
+        public QueryProvider(IDbConnection conn, bool transaction)
         {
             this.conn = conn;
             this.isOpenTran = transaction;

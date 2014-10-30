@@ -5,9 +5,9 @@ using System.Reflection;
 
 namespace DapperProvider
 {
-    public abstract class QueryProvider : IQueryProvider
+    public abstract class BaseQueryProvider : IQueryProvider
     {
-        protected QueryProvider()
+        protected BaseQueryProvider()
         {
         }
 
