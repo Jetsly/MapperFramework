@@ -23,7 +23,7 @@ namespace Model
          /// <summary>
          /// 属性改变列表
          /// </summary>
-         public Dictionary<string, object> PropertyChangedDic = new Dictionary<string, object>();
+         public List<string> PropertyChangedList = new List<string>();
          /// <summary>
          /// 属性改变通知
          /// </summary>
@@ -34,7 +34,7 @@ namespace Model
              if (!StructuralComparisons.StructuralEqualityComparer.Equals(field, propertyValue))
              {
 			     field = propertyValue;
-                 PropertyChangedDic.Add(propertyName, propertyValue);
+                 PropertyChangedList.Add(propertyName);
              }
          }      
      }

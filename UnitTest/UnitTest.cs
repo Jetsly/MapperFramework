@@ -26,24 +26,32 @@ namespace UnitTest
         [TestMethod]
         public void TestCRUD()
         {
-            var table = dbConn.GetTable<Userinfo>();
-            var linq = table.Insert<Userinfo, int>(new Userinfo()
+            var table = dbConn.Get<Usermaxrev>();
+            //var insert = table.Insert<Usermaxrev, int>(new Usermaxrev()
+            //{
+            //    LoginName = "dsad",
+            //    MaxMsgId = 156,
+            //});
+
+            //var result = insert.Execute();
+
+            var update = table.Where(x => x.MaxMsgId == 156).Update<Usermaxrev, int>(new Usermaxrev()
             {
-                AnotherName = "a",
-                DeptCode = "b"
+                MaxMsgId = 15567657,
             });
 
-            var result = linq.Execute();
+            var result2 = update.Execute();
+
         }
 
         [TestMethod]
         public void TestSelect()
         {
+            var a = dbConn.Query<Userinfo>("select * from userinfo where LoginName=@LoginName", new Userinfo() { LoginName = "alexliu", AnotherName = "amyhe" });
+            //var table = dbConn.Get<Userinfo>();
+            //var linq = table.Where(x => x.AnotherName == "a");
 
-            var table = dbConn.GetTable<Userinfo>();
-            var linq = table.Where(x => x.AnotherName == "a");
-
-            var reuslt = linq.ToList();
+            //var reuslt = linq.ToList();
         }
     }
 }

@@ -1,37 +1,45 @@
 ﻿using Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
 namespace DapperProvider
 {
-    internal enum QueryType
-    {
-        Insert,
-        Update,
-        Delete,
-        Select
-    }
+
     internal class QueryTranslator : ExpressionVisitor
     {
-        StringBuilder sb;
-        QueryType queryType;
-
-        internal QueryTranslator()
-        {
-        }
-
-        internal string Translate(Expression expression)
-        {
-            this.sb = new StringBuilder();
-            this.Visit(expression);
-            return this.sb.ToString();
-        }
-
+        StringBuilder sb;       
+        internal QueryTranslator() { }
         internal QueryType QueryType
         {
-            get { return queryType; }
+            private set;
+            get;
+        }
+        internal string WhereString
+        {
+            get {return sb.ToString();};
+        }
+        internal DBModel DBModel
+        {
+            private set;
+            get;
+        }
+        /// <summary>
+        /// 表名
+        /// </summary>
+        internal string TableName
+        {
+            private set;
+            get;
+        }
+
+        internal void Translate(Expression expression)
+        {
+            QueryType = QueryType.Select;
+            this.sb = new StringBuilder();
+            this.Visit(expression);
         }
 
         private static Expression StripQuotes(Expression e)
@@ -52,13 +60,23 @@ namespace DapperProvider
                 this.Visit(lambda.Body);
                 return node;
             }
-            else if (node.Method.DeclaringType == typeof(QueryEx) && node.Method.Name.Equals("Insert"))
+            else if (node.Method.DeclaringType == typeof(QueryEx))
             {
-                queryType = QueryType.Insert;
                 this.Visit(node.Arguments[0]);
                 ConstantExpression lambda = (ConstantExpression)node.Arguments[1];
-                //(lambda.Value as DBModel).PropertyChangedDic
-                //this.Visit(lambda.Body);
+                DBModel = (lambda.Value as DBModel);
+                if (node.Method.Name.Equals("Insert"))
+                {
+                    QueryType = QueryType.Insert;
+                }
+                else if (node.Method.Name.Equals("Update"))
+                {
+                    QueryType = QueryType.Update;
+                }
+                else if (node.Method.Name.Equals("Delete"))
+                {
+                    QueryType = QueryType.Delete;
+                }
                 return node;
             }
             throw new NotSupportedException(string.Format("The method '{0}' is not supported", node.Method.Name));
@@ -121,9 +139,7 @@ namespace DapperProvider
             IQueryable q = node.Value as IQueryable;
             if (q != null)
             {
-                // assume constant nodes w/ IQueryables are table references
-                //sb.Append("SELECT * FROM ");
-                //sb.Append(q.ElementType.Name);
+                TableName = q.ElementType.Name;
             }
             else if (node.Value == null)
             {
@@ -137,9 +153,7 @@ namespace DapperProvider
                         sb.Append(((bool)node.Value) ? 1 : 0);
                         break;
                     case TypeCode.String:
-                        sb.Append("'");
-                        sb.Append(node.Value);
-                        sb.Append("'");
+                        sb.AppendFormat("`{0}`", node.Value);
                         break;
                     case TypeCode.Object:
                         throw new NotSupportedException(string.Format("The constant for '{0}' is not supported", node.Value));
@@ -155,7 +169,7 @@ namespace DapperProvider
         {
             if (node.Expression != null && node.Expression.NodeType == ExpressionType.Parameter)
             {
-                sb.Append(node.Member.Name);
+                sb.AppendFormat("`{0}`", node.Member.Name);
                 return node;
             }
             throw new NotSupportedException(string.Format("The member '{0}' is not supported", node.Member.Name));

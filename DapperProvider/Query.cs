@@ -62,10 +62,5 @@ namespace DapperProvider
         {
             return ((IEnumerable)this.provider.Execute(this.expression)).GetEnumerator();
         }
-
-        public override string ToString()
-        {
-            return this.provider.GetQueryText(this.expression);
-        }
     }
 }

@@ -33,6 +33,48 @@ namespace DapperProvider
                 .MakeGenericMethod(new Type[] { typeof(TSource), typeof(TResult) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
         }
         /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static IQueryable<TResult> Update<TSource, TResult>(this IQueryable<TSource> source, TSource entity)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            return source.Provider.CreateQuery<TResult>(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
+                .MakeGenericMethod(new Type[] { typeof(TSource), typeof(TResult) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public static IQueryable<TResult> Delete<TSource, TResult>(this IQueryable<TSource> source, TSource entity)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            return source.Provider.CreateQuery<TResult>(Expression.Call(null, ((MethodInfo)MethodBase.GetCurrentMethod())
+                .MakeGenericMethod(new Type[] { typeof(TSource), typeof(TResult) }), new Expression[] { source.Expression, Expression.Constant(entity) }));
+        }
+        /// <summary>
         /// 执行结果
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
@@ -52,7 +94,7 @@ namespace DapperProvider
         /// <typeparam name="T"></typeparam>
         /// <param name="conn"></param>
         /// <returns></returns>
-        public static Query<T> GetTable<T>(this IDbConnection conn)
+        public static Query<T> Get<T>(this IDbConnection conn)
         {
             return new Query<T>(new DapperQueryProvider(conn));
         }

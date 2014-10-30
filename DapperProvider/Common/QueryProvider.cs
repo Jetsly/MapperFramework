@@ -38,8 +38,6 @@ namespace DapperProvider
         {
             return this.Execute(expression);
         }
-
-        public abstract string GetQueryText(Expression expression);
         public abstract object Execute(Expression expression);
     }
 
