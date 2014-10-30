@@ -34,10 +34,12 @@ namespace UnitTest
             //});
 
             //var result = insert.Execute();
-            var id = 156;
-            var update = dbConn.Table<Usermaxrev>().Where(x => x.MaxMsgId == id || x.LoginName == "a").Update(new Usermaxrev()
+            var id = 2;
+            var update = dbConn.Table<Usermaxrev>()
+                .Where(x => x.MaxMsgId == id || x.LoginName == "dsad")
+                .Update(new Usermaxrev()
             {
-                MaxMsgId = 15567657,
+                MaxMsgId = 1,
             });
 
             var result2 = update.Execute();

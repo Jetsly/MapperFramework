@@ -27,7 +27,11 @@ namespace DapperProvider
                 case QueryType.Insert:
                     sql = string.Format("INSERT INTO `{0}`(`{1}`) SELECT @{2}", translate.TableName,
                         string.Join("`,`", translate.DBModel.PropertyChangedList), string.Join(",@", translate.DBModel.PropertyChangedList));
-                    return conn.Execute(sql, translate.DBModel);
+                    if (conn.Execute(sql, translate.DBModel) != 1)
+                    {
+                        return 0;
+                    }
+                    return (int)conn.Query<decimal>("SELECT @@IDENTITY AS LastInsertedId").Single();
                 //UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
 
                 case QueryType.Update:
