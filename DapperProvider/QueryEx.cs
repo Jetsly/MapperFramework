@@ -89,10 +89,11 @@ namespace DapperProvider
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="conn"></param>
+        /// <param name="transaction">是否开启事务</param>
         /// <returns></returns>
-        public static Query<T> Table<T>(this IDbConnection conn)
+        public static Query<T> Table<T>(this IDbConnection conn, bool transaction=false)
         {
-            return new Query<T>(new DapperQueryProvider(conn));
+            return new Query<T>(new DapperQueryProvider(conn, transaction));
         }
 
     }
