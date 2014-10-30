@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -40,6 +41,10 @@ namespace DapperProvider
         }
 
         public abstract object Execute(Expression expression);
+
+        public abstract IEnumerable<T> Query<T>(string sql);
+
+
     }
 
     

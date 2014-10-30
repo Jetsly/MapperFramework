@@ -8,9 +8,9 @@ namespace DapperProvider
 {
     public class Query<T> :IOrderedQueryable<T>
     {
-        IQueryProvider provider;
+        BaseQueryProvider provider;
         Expression expression;
-        public Query(IQueryProvider provider)
+        public Query(BaseQueryProvider provider)
         {
             if (provider == null)
             {
@@ -20,7 +20,7 @@ namespace DapperProvider
             this.expression = Expression.Constant(this);
         }
 
-        public Query(IQueryProvider provider, Expression expression)
+        public Query(BaseQueryProvider provider, Expression expression)
         {
             if (provider == null)
             {
@@ -55,12 +55,14 @@ namespace DapperProvider
 
         public IEnumerator<T> GetEnumerator()
         {
-            return ((IEnumerable<T>)this.provider.Execute(this.expression)).GetEnumerator();
+            var sql = this.provider.Execute(this.expression);
+            return ((IEnumerable<T>)this.provider.Query<T>(sql.ToString())).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)this.provider.Execute(this.expression)).GetEnumerator();
+            var sql = this.provider.Execute(this.expression);
+            return ((IEnumerable)this.provider.Query<T>(sql.ToString())).GetEnumerator();
         }
     }
 }

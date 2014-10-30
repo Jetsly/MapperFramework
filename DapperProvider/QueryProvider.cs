@@ -73,14 +73,17 @@ namespace DapperProvider
                     sql = string.Format("SELECT {0} FROM `{1}` WHERE {2}",
                         string.Format("{0}", translate.SelectColumns != null && translate.SelectColumns.Length > 0 ? ("`" + string.Join("`,`", translate.SelectColumns) + "`") : "*"),
                         translate.TableName, translate.WhereString);
-                    //var a = typeof(T);
-                    return null;// conn.Query<T>(sql);
+
+                    return sql;
                 default:
                     throw new NotSupportedException(string.Format("The QueryType '{0}' is not supported", translate.QueryType));
             }
         }
 
-
+        public override IEnumerable<T> Query<T>(string sql)
+        {
+            return conn.Query<T>(sql);
+        }
         /// <summary>
         /// 执行脚本
         /// </summary>
@@ -106,6 +109,17 @@ namespace DapperProvider
                     throw ex;
                 }
             }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        private IEnumerable<T> QuerySql<T>(T obj, string sql)
+        {
+            return conn.Query<T>(sql);
         }
     }
 

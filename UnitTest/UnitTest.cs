@@ -26,7 +26,7 @@ namespace UnitTest
         [TestMethod]
         public void TestCRUD()
         {
-            var loginName = "a777";
+            var loginName = "a7";
             var insert = dbConn.Table<Usermaxrev>().Insert(new Usermaxrev()
             {
                 LoginName = loginName,
@@ -35,26 +35,25 @@ namespace UnitTest
 
             var result = insert.Execute();
 
-            var a = new Usermaxrev()
-            {
-                LoginName = "a777"
-            };
+            //var a = new Usermaxrev()
+            //{
+            //    LoginName = "a777"
+            //};
 
-            var update = dbConn.Table<Usermaxrev>()
-                .Where(x => x.LoginName == a.LoginName)
-                .Update(new Usermaxrev()
-            {
-                MaxMsgId = 11233,
-            });
+            //var update = dbConn.Table<Usermaxrev>()
+            //    .Where(x => x.LoginName == a.LoginName)
+            //    .Update(new Usermaxrev()
+            //{
+            //    MaxMsgId = 11233,
+            //});
 
+            //var result2 = update.Execute();
 
-             var result2 = update.Execute();
+            //var deletd = dbConn.Table<Usermaxrev>()
+            //    .Where(x => x.MaxMsgId == 1 || x.LoginName == "a")
+            //    .Delete();
 
-             var deletd = dbConn.Table<Usermaxrev>()
-                 .Where(x => x.MaxMsgId == 1 || x.LoginName == "a")
-                 .Delete();
-
-             var result3 = deletd.Execute();
+            //var result3 = deletd.Execute();
 
         }
 
@@ -63,9 +62,9 @@ namespace UnitTest
         {
             var select = from a in dbConn.Table<Userinfo>()
                          where a.AnotherName == "alexliu"
-                         select a.AccountStatusId;
+                         select a;
 
-            var ling = select.ToList<int?>();
+            var ling = select.ToList();
         }
     }
 }
