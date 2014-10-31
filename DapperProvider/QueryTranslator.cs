@@ -28,14 +28,6 @@ namespace DapperProvider
             get { return sb.ToString(); }
         }
         /// <summary>
-        /// 查询返回类型
-        /// </summary>
-        internal Type ReturnType
-        {
-            private set;
-            get;
-        }
-        /// <summary>
         /// 查询的列
         /// </summary>
         internal string[] SelectColumns
@@ -92,7 +84,6 @@ namespace DapperProvider
                     LambdaExpression lambda = (LambdaExpression)StripQuotes(node.Arguments[1]);
                     ColumnProjection columnProjec = new ColumnProjector().ProjectColumns(lambda.Body, this.row);
                     SelectColumns = columnProjec.Columns.ToArray();
-                    ReturnType = columnProjec.SelectorType;
                     return node;
                 }
             }
@@ -177,7 +168,6 @@ namespace DapperProvider
             IQueryable q = node.Value as IQueryable;
             if (q != null)
             {
-                ReturnType = q.ElementType;
                 TableName = q.ElementType.Name;
             }
             else if (node.Value == null)
